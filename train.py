@@ -153,11 +153,14 @@ def create_model(batch_size, config):
     frame_sizes = config.get('frame_sizes')
     q_type = config.get('q_type')
     q_levels = 256 if q_type=='mu-law' else config.get('q_levels')
-    assert frame_sizes[0] < frame_sizes[1], 'Frame sizes should be specified in ascending order'
-    # The following model configuration interdependencies are sourced from the original implementation:
-    # https://github.com/soroushmehr/sampleRNN_ICLR2017/blob/master/models/three_tier/three_tier.py
-    assert seq_len % frame_sizes[1] == 0, 'seq_len should be evenly divisible by tier 2 frame size'
-    assert frame_sizes[1] % frame_sizes[0] == 0, 'Tier 2 frame size should be evenly divisible by tier 1 frame size'
+
+    # these asserts only matter for 3-tier, not 2-tier
+    if len(frame_sizes) > 1:
+        assert frame_sizes[0] < frame_sizes[1], 'Frame sizes should be specified in ascending order'
+        # The following model configuration interdependencies are sourced from the original implementation:
+        # https://github.com/soroushmehr/sampleRNN_ICLR2017/blob/master/models/three_tier/three_tier.py
+        assert seq_len % frame_sizes[1] == 0, 'seq_len should be evenly divisible by tier 2 frame size'
+        assert frame_sizes[1] % frame_sizes[0] == 0, 'Tier 2 frame size should be evenly divisible by tier 1 frame size'
     return SampleRNN(
         batch_size=batch_size,
         frame_sizes=frame_sizes,
@@ -226,7 +229,13 @@ def main():
     model = create_model(args.batch_size, config)
 
     seq_len = model.seq_len
-    overlap = model.big_frame_size
+
+    overlap = 0
+    if model.big_frame_size is not None:
+        overlap = model.big_frame_size
+    else:
+        overlap = model.frame_size
+
     q_type = model.q_type
     q_levels = model.q_levels
 

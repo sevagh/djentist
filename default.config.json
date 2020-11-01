@@ -1,6 +1,6 @@
 {
     "seq_len": 1024,
-    "frame_sizes": [16,64],
+    "frame_sizes": [16],
     "dim": 1024,
     "rnn_type": "gru",
     "num_rnn_layers": 4,

@@ -4,6 +4,10 @@
 
 -----------
 
+### UPDATES (31/10/20)
+
+* 2-tier SampleRNN is supported by passing a single value in `frame_sizes` ([16,64] = 3-tier, [16] = 2-tier).
+
 ### UPDATES (08/09/20)
 
 * Audio generation speed is now greatly improved (about 3-4 times faster).
@@ -48,7 +52,7 @@
 
 ## Features
 
-- Three-tier architecture
+- Both two- and three-tier architectures
 - Choice of GRU or LSTM cell RNN
 - Choice of mu-law or linear quantization
 - Seeding of generated audio
@@ -181,7 +185,7 @@ Model parameters are specified through a JSON configuration file, which may be p
 | Parameter Name           | Description           | Default Value  |
 | -------------------------|-----------------------|----------------|
 | `seq_len`                | RNN sequence length. Note that the value must be evenly-divisible by the top tier frame size.        | 1024           |
-| `frame_sizes`            | Frame sizes (in samples) of the two upper tiers in the architecture, in ascending order. Note that the frame size of the upper tier must be an even multiple of that of the lower tier.  | [16,64]            |
+| `frame_sizes`            | Frame sizes (in samples) of the one or two upper tiers in the architecture, in ascending order. Note that the frame size of the upper tier must be an even multiple of that of the lower tier. Pass a single value to use 2-tier SampleRNN  | [16,64] (3-tier), [16] (2-tier)            |
 | `dim`                    | RNN hidden layer dimensionality.          | 1024         |
 | `rnn_type`               | RNN type to use, either `gru` or `lstm`.           | `gru`          | 
 | `num_rnn_layers`         | Depth of the RNN in each of the two upper tiers.           | 4          |
